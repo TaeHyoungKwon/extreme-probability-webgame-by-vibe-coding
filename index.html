@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>극한의 확률</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 메인 화면 -->
+    <div id="main-screen" class="screen active">
+        <div class="game-container">
+            <h1 class="game-title">🎮 극한의 확률</h1>
+            <p class="game-description">카드 선택의 극한 긴장감을 경험해보세요!</p>
+            <button class="btn btn-primary" onclick="showNicknameScreen()">게임 시작</button>
+        </div>
+    </div>
+
+    <!-- 닉네임 입력 화면 -->
+    <div id="nickname-screen" class="screen">
+        <div class="game-container">
+            <h2>닉네임을 입력하세요</h2>
+            <input type="text" id="nickname-input" placeholder="닉네임을 입력하세요" maxlength="10">
+            <button class="btn btn-primary" onclick="saveNickname()">저장 후 계속하기</button>
+            <button class="btn btn-secondary" onclick="showMainScreen()">돌아가기</button>
+        </div>
+    </div>
+
+    <!-- 게임 모드 선택 화면 -->
+    <div id="mode-screen" class="screen">
+        <div class="game-container">
+            <h2>게임 모드 선택</h2>
+            <button class="btn btn-primary" onclick="startSoloMode()">🎯 솔로모드</button>
+            <div class="mode-description">
+                <p>2장의 카드 중 하나를 선택하여<br>최대한 많은 PASS를 연속으로 획득하세요!</p>
+            </div>
+            <button class="btn btn-secondary" onclick="showNicknameScreen()">돌아가기</button>
+        </div>
+    </div>
+
+    <!-- 카드 선택 화면 -->
+    <div id="game-screen" class="screen">
+        <div class="game-container">
+            <div class="game-stats">
+                <div class="player-info">
+                    <span id="player-nickname">플레이어</span>
+                </div>
+                <div class="streak-counter">
+                    <span class="streak-label">연속 성공</span>
+                    <span id="current-streak">0</span>
+                </div>
+            </div>
+            
+            <div class="cards-container">
+                <div class="card" id="card1" onclick="selectCard(0)">
+                    <div class="card-inner">
+                        <div class="card-front">?</div>
+                        <div class="card-back" id="card1-back"></div>
+                    </div>
+                </div>
+                <div class="card" id="card2" onclick="selectCard(1)">
+                    <div class="card-inner">
+                        <div class="card-front">?</div>
+                        <div class="card-back" id="card2-back"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-message" id="game-message"></div>
+            
+            <div class="game-controls" id="game-controls" style="display: none;">
+                <button class="btn btn-primary" id="continue-btn" onclick="nextRound()" style="display: none;">다음 라운드</button>
+                <button class="btn btn-accent" id="ranking-btn" onclick="showRanking()" style="display: none;">내 랭킹 보기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 랭킹 화면 -->
+    <div id="ranking-screen" class="screen">
+        <div class="game-container">
+            <h2>🏆 랭킹</h2>
+            <div class="ranking-list" id="ranking-list">
+                <!-- 랭킹 목록이 동적으로 추가됩니다 -->
+            </div>
+            <div class="ranking-controls">
+                <button class="btn btn-primary" onclick="showMainScreen()">게임 다시 시작</button>
+                <button class="btn btn-secondary" onclick="showGameScreen()">게임 계속하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
+    <!-- 게임 스크립트 -->
+    <script src="script.js"></script>
+</body>
+</html> 
