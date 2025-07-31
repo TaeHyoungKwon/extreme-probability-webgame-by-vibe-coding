@@ -26,6 +26,44 @@
 3. Settings > Pages에서 배포를 활성화합니다.
 4. 제공된 URL로 접속하여 게임을 플레이합니다.
 
+## 🎵 BGM 추가 방법 (선택사항)
+
+현재는 Web Audio API로 생성된 간단한 배경음이 재생됩니다. 실제 음악 파일을 사용하려면:
+
+### 1. 무료 BGM 다운로드
+
+**추천 무료 BGM 사이트:**
+- [Freesound.org](https://freesound.org/) - 다양한 무료 사운드
+- [Zapsplat](https://www.zapsplat.com/) - 무료 회원가입 후 이용
+- [YouTube Audio Library](https://www.youtube.com/audiolibrary) - 유튜브 오디오 라이브러리
+- [Pixabay Music](https://pixabay.com/music/) - 무료 음악 라이브러리
+
+**BGM 조건:**
+- 파일 형식: MP3, OGG, WAV
+- 용량: 5MB 이하 권장
+- 길이: 1-3분 (루프 재생됨)
+
+### 2. 파일 추가
+
+1. 다운로드한 BGM 파일을 게임 폴더에 복사
+2. `index.html`에서 다음 부분을 수정:
+
+```html
+<audio id="bgm" loop preload="auto">
+    <source src="your-bgm-file.mp3" type="audio/mpeg">
+    <source src="your-bgm-file.ogg" type="audio/ogg">
+</audio>
+```
+
+### 3. 볼륨 조절
+
+`script.js`에서 볼륨을 조절할 수 있습니다:
+
+```javascript
+// startMusic() 함수에서
+musicState.bgmAudio.volume = 0.3; // 0.0 ~ 1.0 (30% 볼륨)
+```
+
 ## 🔥 Firebase 연동 설정
 
 실시간 랭킹 공유를 위해 Firebase를 설정할 수 있습니다.
@@ -88,9 +126,10 @@ Realtime Database의 보안 규칙을 다음과 같이 설정합니다:
 ## 🎮 게임 플레이 방법
 
 ### 1. 게임 시작
-1. "게임 시작" 버튼을 클릭합니다.
-2. 닉네임을 입력합니다 (최대 10자).
-3. "솔로모드"를 선택합니다.
+1. 페이지 로드 시 BGM이 자동으로 시작됩니다 (음소거 상태).
+2. "게임 시작" 버튼을 클릭하면 BGM이 활성화됩니다.
+3. 닉네임을 입력합니다 (최대 10자).
+4. "솔로모드"를 선택합니다.
 
 ### 2. 카드 선택
 1. 2장의 카드 중 하나를 클릭합니다.
@@ -112,6 +151,14 @@ Realtime Database의 보안 규칙을 다음과 같이 설정합니다:
 - **Design**: 모던 글래스모피즘 디자인
 
 ## 🎨 주요 기능
+
+### 🎵 사운드 시스템
+- **배경음악 (BGM)**: 페이지 로드 시 자동 시작 (브라우저 정책에 따라 음소거 상태로 시작 후 사용자 상호작용 시 활성화)
+- **실제 음악 파일**: mixkit-games-worldbeat-466.mp3가 기본 BGM으로 재생
+- **사운드 효과**: 카드 선택, 성공, 실패 시 각각 다른 효과음
+- **음악 컨트롤**: 우측 상단 버튼으로 음악 on/off 제어
+- **설정 저장**: 음악 설정이 로컬에 저장됨
+- **자동재생 최적화**: muted autoplay로 시작하여 브라우저 제한 우회
 
 ### 애니메이션
 - 카드 뒤집기 3D 애니메이션

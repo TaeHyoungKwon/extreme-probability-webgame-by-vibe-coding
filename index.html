@@ -7,12 +7,26 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- 음악 컨트롤 -->
+    <div id="music-control" class="music-control">
+        <button id="music-toggle" class="music-btn" onclick="toggleMusic()">
+            <span id="music-icon">🎵</span>
+        </button>
+    </div>
+
+    <!-- 배경음악 -->
+    <audio id="bgm" loop preload="auto">
+        <source src="mixkit-games-worldbeat-466.mp3" type="audio/mpeg">
+        <source src="./mixkit-games-worldbeat-466.mp3" type="audio/mpeg">
+    </audio>
+
     <!-- 메인 화면 -->
     <div id="main-screen" class="screen active">
         <div class="game-container">
             <h1 class="game-title">🎮 극한의 확률</h1>
             <p class="game-description">카드 선택의 극한 긴장감을 경험해보세요!</p>
             <button class="btn btn-primary" onclick="showNicknameScreen()">게임 시작</button>
+            <button class="btn btn-secondary" onclick="testBGM()" style="margin-top: 10px;">🎵 BGM 테스트</button>
         </div>
     </div>
 
