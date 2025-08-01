@@ -576,12 +576,12 @@ function saveScoreLocal(scoreData) {
     let rankings = JSON.parse(localStorage.getItem('gameRankings') || '[]');
     rankings.push(scoreData);
     
-    // 점수순으로 정렬하고 상위 100개만 유지
+    // 점수순으로 정렬하고 상위 100개만 유지 (동점일 경우 최근 기록 우선)
     rankings.sort((a, b) => {
         if (b.score !== a.score) {
             return b.score - a.score;
         }
-        return a.timestamp - b.timestamp;
+        return b.timestamp - a.timestamp; // 최근 기록이 더 높은 순위
     });
     rankings = rankings.slice(0, 100);
     
@@ -604,12 +604,12 @@ function loadRanking() {
                         rankings.push(child.val());
                     });
                     
-                    // 점수순으로 정렬
+                    // 점수순으로 정렬 (동점일 경우 최근 기록 우선)
                     rankings.sort((a, b) => {
                         if (b.score !== a.score) {
                             return b.score - a.score;
                         }
-                        return a.timestamp - b.timestamp;
+                        return b.timestamp - a.timestamp; // 최근 기록이 더 높은 순위
                     });
                     
                     displayRanking(rankings);
@@ -668,6 +668,19 @@ function displayRanking(rankings) {
     }
 }
 
+// 날짜/시간 포맷팅 함수 (250801 / 19:26 형식)
+function formatDateTime(timestamp) {
+    const date = new Date(timestamp);
+    
+    const year = date.getFullYear().toString().slice(-2); // 마지막 2자리
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // 01-12
+    const day = date.getDate().toString().padStart(2, '0'); // 01-31
+    const hours = date.getHours().toString().padStart(2, '0'); // 00-23
+    const minutes = date.getMinutes().toString().padStart(2, '0'); // 00-59
+    
+    return `${year}${month}${day} / ${hours}:${minutes}`;
+}
+
 function createRankingItem(ranking, position) {
     const rankItem = document.createElement('div');
     rankItem.className = 'ranking-item';
@@ -678,9 +691,15 @@ function createRankingItem(ranking, position) {
     else if (position <= 10) rankIcon = `${position}위`;
     else rankIcon = `${position}위`;
     
+    // 날짜/시간 포맷팅 (timestamp가 있는 경우에만)
+    const dateTimeText = ranking.timestamp ? formatDateTime(ranking.timestamp) : '';
+    
     rankItem.innerHTML = `
         <div class="rank-position">${rankIcon}</div>
-        <div class="rank-nickname">${ranking.nickname}</div>
+        <div class="rank-info">
+            <div class="rank-nickname">${ranking.nickname}</div>
+            ${dateTimeText ? `<div class="rank-datetime">${dateTimeText}</div>` : ''}
+        </div>
         <div class="rank-score">${ranking.score}점</div>
     `;
     

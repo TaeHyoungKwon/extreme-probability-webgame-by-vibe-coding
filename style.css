@@ -341,6 +341,7 @@ input[type="text"]:focus {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     transition: all 0.3s ease;
+    min-height: 70px;
 }
 
 .ranking-item:hover {
@@ -360,11 +361,22 @@ input[type="text"]:focus {
     min-width: 40px;
 }
 
-.rank-nickname {
+.rank-info {
     flex-grow: 1;
     text-align: left;
     margin-left: 15px;
+}
+
+.rank-nickname {
     font-weight: bold;
+    font-size: 1rem;
+    margin-bottom: 3px;
+}
+
+.rank-datetime {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Courier New', monospace;
 }
 
 .rank-score {
@@ -473,6 +485,15 @@ input[type="text"]:focus {
     
     .ranking-controls {
         flex-direction: column;
+    }
+    
+    .rank-datetime {
+        font-size: 0.7rem;
+    }
+    
+    .ranking-item {
+        min-height: 65px;
+        padding: 12px;
     }
     
     .music-control {
