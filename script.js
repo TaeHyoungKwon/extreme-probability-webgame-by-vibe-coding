@@ -371,16 +371,14 @@ const cardSymbols = [
 ];
 
 function startNewRound() {
-    // 카드 생성 (50% 확률로 pass/fail 할당)
-    gameState.gameCards = [
-        Math.random() < 0.5 ? 'pass' : 'fail',
-        Math.random() < 0.5 ? 'pass' : 'fail'
-    ];
+    // 카드 생성: 항상 1장은 Pass, 1장은 Fail로 고정
+    // 어느 카드가 Pass인지는 랜덤하게 결정 (50% 확률)
+    const passCardIndex = Math.random() < 0.5 ? 0 : 1; // 0번 또는 1번 카드가 Pass
     
-    // 적어도 하나는 pass가 되도록 보장 (게임이 너무 빨리 끝나는 것을 방지)
-    if (gameState.currentStreak === 0 && gameState.gameCards.every(card => card === 'fail')) {
-        gameState.gameCards[Math.floor(Math.random() * 2)] = 'pass';
-    }
+    gameState.gameCards = ['fail', 'fail']; // 기본적으로 모두 fail로 초기화
+    gameState.gameCards[passCardIndex] = 'pass'; // 선택된 카드만 pass로 변경
+    
+    console.log(`🎯 라운드 ${gameState.currentStreak + 1}: 카드${passCardIndex + 1}이 PASS, 카드${passCardIndex === 0 ? 2 : 1}이 FAIL`);
     
     // 각 카드에 랜덤 문양 할당
     gameState.cardSymbols = [
