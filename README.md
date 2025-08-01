@@ -105,9 +105,9 @@ const firebaseConfig = {
 };
 ```
 
-### 5. 보안 규칙 설정
+### 5. Realtime Database 보안 규칙 설정
 
-Realtime Database의 보안 규칙을 다음과 같이 설정합니다:
+Firebase Console > Realtime Database > 규칙 탭에서 다음과 같이 설정합니다:
 
 ```json
 {
@@ -118,10 +118,16 @@ Realtime Database의 보안 규칙을 다음과 같이 설정합니다:
       "$rankingId": {
         ".validate": "newData.hasChildren(['nickname', 'score', 'timestamp'])"
       }
+    },
+    "test-rankings": {
+      ".read": true,
+      ".write": true
     }
   }
 }
 ```
+
+**중요:** 위 규칙은 테스트용입니다. 실제 배포 시에는 더 엄격한 보안 규칙을 적용하세요.
 
 ## 🎮 게임 플레이 방법
 

@@ -1,22 +1,13 @@
 // Firebase 설정 (실제 사용시 여기에 본인의 Firebase 프로젝트 정보를 입력하세요)
 const firebaseConfig = {
-    // 여기에 실제 Firebase 프로젝트 정보를 입력하세요
-    // apiKey: "your-api-key",
-    // authDomain: "your-project.firebaseapp.com",
-    // databaseURL: "https://your-project-default-rtdb.firebaseio.com/",
-    // projectId: "your-project",
-    // storageBucket: "your-project.appspot.com",
-    // messagingSenderId: "123456789",
-    // appId: "your-app-id"
-    
-    // 임시 테스트용 더미 설정 (실제로는 작동하지 않음)
-    apiKey: "demo-api-key",
-    authDomain: "demo.firebaseapp.com",
-    databaseURL: "https://demo-default-rtdb.firebaseio.com/",
-    projectId: "demo",
-    storageBucket: "demo.appspot.com",
-    messagingSenderId: "123456789",
-    appId: "demo-app-id"
+    apiKey: "AIzaSyBgznbItRhJEoYbshDj5f1mR-V4zHUnNLY",
+    authDomain: "extreme-probability.firebaseapp.com",
+    databaseURL: "https://extreme-probability-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    projectId: "extreme-probability",
+    storageBucket: "extreme-probability.firebasestorage.app",
+    messagingSenderId: "1070895319910",
+    appId: "1:1070895319910:web:fbdecab2b40f70560756a7",
+    measurementId: "G-WZKZZQQW73"
 };
 
 // 게임 상태 관리
@@ -44,12 +35,39 @@ function initFirebase() {
     try {
         firebase.initializeApp(firebaseConfig);
         gameState.database = firebase.database();
-        console.log('Firebase 연결 성공');
+        
+        // Firebase 연결 테스트
+        gameState.database.ref('.info/connected').on('value', function(snapshot) {
+            if (snapshot.val() === true) {
+                console.log('✅ Firebase Realtime Database 연결 성공!');
+                showConnectionStatus('connected');
+            } else {
+                console.log('❌ Firebase Realtime Database 연결 끊어짐');
+                showConnectionStatus('disconnected');
+            }
+        });
+        
+        console.log('🔥 Firebase 초기화 완료');
+        console.log('Database URL:', firebaseConfig.databaseURL);
+        
     } catch (error) {
-        console.log('Firebase 연결 실패 (데모 모드로 실행):', error.message);
-        // 데모 모드에서는 로컬 스토리지를 랭킹 DB로 사용
+        console.error('❌ Firebase 연결 실패:', error);
+        console.log('로컬 스토리지 모드로 전환');
         gameState.database = null;
+        showConnectionStatus('local');
     }
+}
+
+// 연결 상태 표시
+function showConnectionStatus(status) {
+    const statusColors = {
+        connected: '🟢 온라인 DB 연결됨',
+        disconnected: '🔴 DB 연결 끊어짐',
+        local: '🟡 로컬 모드'
+    };
+    
+    // 연결 상태를 콘솔과 화면에 표시
+    console.log('DB 상태:', statusColors[status]);
 }
 
 // 페이지 로드시 초기화
@@ -520,22 +538,38 @@ function saveScore() {
     const scoreData = {
         nickname: gameState.currentPlayer,
         score: gameState.currentStreak,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        date: new Date().toISOString() // 읽기 쉬운 날짜 추가
     };
+    
+    console.log('🎯 점수 저장 시도:', scoreData);
     
     if (gameState.database) {
         // Firebase에 저장
-        try {
-            gameState.database.ref('rankings').push(scoreData);
-            console.log('점수가 Firebase에 저장되었습니다.');
-        } catch (error) {
-            console.log('Firebase 저장 실패, 로컬 저장으로 전환:', error.message);
-            saveScoreLocal(scoreData);
-        }
+        gameState.database.ref('rankings').push(scoreData)
+            .then(() => {
+                console.log('✅ Firebase에 점수 저장 성공!');
+                console.log('저장된 데이터:', scoreData);
+                showSaveMessage('🟢 온라인 DB에 저장됨');
+            })
+            .catch(error => {
+                console.error('❌ Firebase 저장 실패:', error);
+                console.log('로컬 저장으로 전환합니다...');
+                saveScoreLocal(scoreData);
+                showSaveMessage('🟡 로컬에 저장됨 (Firebase 오류)');
+            });
     } else {
         // 로컬 스토리지에 저장 (데모 모드)
+        console.log('🟡 Firebase 미연결 - 로컬 저장 모드');
         saveScoreLocal(scoreData);
+        showSaveMessage('🟡 로컬에 저장됨');
     }
+}
+
+// 저장 상태 메시지 표시
+function showSaveMessage(message) {
+    console.log('💾 저장 상태:', message);
+    // 추후 UI에 표시할 수도 있음
 }
 
 function saveScoreLocal(scoreData) {
@@ -675,6 +709,52 @@ document.addEventListener('keydown', function(event) {
 
 // 모바일 터치 이벤트 개선
 document.addEventListener('touchstart', function() {}, { passive: true });
+
+// Firebase 테스트 함수
+function testFirebase() {
+    console.log('🔥 Firebase 연결 테스트 시작...');
+    console.log('Firebase Config:', firebaseConfig);
+    
+    if (gameState.database) {
+        console.log('✅ Database 객체 존재');
+        
+        // 테스트 데이터 저장
+        const testData = {
+            nickname: 'TEST_USER',
+            score: 999,
+            timestamp: Date.now(),
+            date: new Date().toISOString(),
+            isTest: true
+        };
+        
+        console.log('🧪 테스트 데이터 저장 시도:', testData);
+        
+        gameState.database.ref('test-rankings').push(testData)
+            .then((ref) => {
+                console.log('✅ Firebase 테스트 저장 성공!');
+                console.log('저장된 Key:', ref.key);
+                alert('🎉 Firebase 연결 성공!\n테스트 데이터가 저장되었습니다.\n\nFirebase 콘솔 > Realtime Database에서 "test-rankings" 확인해보세요!');
+                
+                // 저장된 데이터 즉시 읽어보기
+                return gameState.database.ref('test-rankings').limitToLast(1).once('value');
+            })
+            .then((snapshot) => {
+                console.log('📖 저장된 테스트 데이터 확인:', snapshot.val());
+            })
+            .catch(error => {
+                console.error('❌ Firebase 테스트 실패:', error);
+                console.error('Error details:', {
+                    code: error.code,
+                    message: error.message,
+                    details: error.details
+                });
+                alert('❌ Firebase 연결 실패!\n\n오류: ' + error.message + '\n\n1. Firebase Console에서 Realtime Database가 생성되었는지 확인\n2. 보안 규칙이 올바른지 확인\n3. databaseURL이 정확한지 확인');
+            });
+    } else {
+        console.log('❌ Database 객체가 없습니다');
+        alert('❌ Firebase 초기화 실패!\n\n개발자 도구 콘솔을 확인하고\nFirebase 설정을 점검해주세요.');
+    }
+}
 
 // BGM 테스트 함수
 function testBGM() {
