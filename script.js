@@ -39,16 +39,12 @@ function initFirebase() {
         // Firebase 연결 테스트
         gameState.database.ref('.info/connected').on('value', function(snapshot) {
             if (snapshot.val() === true) {
-                console.log('✅ Firebase Realtime Database 연결 성공!');
                 showConnectionStatus('connected');
             } else {
-                console.log('❌ Firebase Realtime Database 연결 끊어짐');
                 showConnectionStatus('disconnected');
             }
         });
         
-        console.log('🔥 Firebase 초기화 완료');
-        console.log('Database URL:', firebaseConfig.databaseURL);
         
     } catch (error) {
         console.error('❌ Firebase 연결 실패:', error);
@@ -65,9 +61,6 @@ function showConnectionStatus(status) {
         disconnected: '🔴 DB 연결 끊어짐',
         local: '🟡 로컬 모드'
     };
-    
-    // 연결 상태를 콘솔과 화면에 표시
-    console.log('DB 상태:', statusColors[status]);
 }
 
 // 페이지 로드시 초기화
@@ -378,8 +371,6 @@ function startNewRound() {
     gameState.gameCards = ['fail', 'fail']; // 기본적으로 모두 fail로 초기화
     gameState.gameCards[passCardIndex] = 'pass'; // 선택된 카드만 pass로 변경
     
-    console.log(`🎯 라운드 ${gameState.currentStreak + 1}: 카드${passCardIndex + 1}이 PASS, 카드${passCardIndex === 0 ? 2 : 1}이 FAIL`);
-    
     // 각 카드에 랜덤 문양 할당
     gameState.cardSymbols = [
         cardSymbols[Math.floor(Math.random() * cardSymbols.length)],
@@ -546,19 +537,14 @@ function saveScore() {
         // Firebase에 저장
         gameState.database.ref('rankings').push(scoreData)
             .then(() => {
-                console.log('✅ Firebase에 점수 저장 성공!');
-                console.log('저장된 데이터:', scoreData);
                 showSaveMessage('🟢 온라인 DB에 저장됨');
             })
             .catch(error => {
-                console.error('❌ Firebase 저장 실패:', error);
-                console.log('로컬 저장으로 전환합니다...');
                 saveScoreLocal(scoreData);
                 showSaveMessage('🟡 로컬에 저장됨 (Firebase 오류)');
             });
     } else {
         // 로컬 스토리지에 저장 (데모 모드)
-        console.log('🟡 Firebase 미연결 - 로컬 저장 모드');
         saveScoreLocal(scoreData);
         showSaveMessage('🟡 로컬에 저장됨');
     }
@@ -613,11 +599,9 @@ function loadRanking() {
                     displayRanking(rankings);
                 })
                 .catch(error => {
-                    console.log('Firebase 랭킹 로드 실패, 로컬 랭킹 사용:', error.message);
                     loadRankingLocal();
                 });
         } catch (error) {
-            console.log('Firebase 접근 실패, 로컬 랭킹 사용:', error.message);
             loadRankingLocal();
         }
     } else {
@@ -729,11 +713,8 @@ document.addEventListener('touchstart', function() {}, { passive: true });
 
 // Firebase 테스트 함수
 function testFirebase() {
-    console.log('🔥 Firebase 연결 테스트 시작...');
-    console.log('Firebase Config:', firebaseConfig);
     
     if (gameState.database) {
-        console.log('✅ Database 객체 존재');
         
         // 테스트 데이터 저장
         const testData = {
@@ -744,12 +725,8 @@ function testFirebase() {
             isTest: true
         };
         
-        console.log('🧪 테스트 데이터 저장 시도:', testData);
-        
         gameState.database.ref('test-rankings').push(testData)
             .then((ref) => {
-                console.log('✅ Firebase 테스트 저장 성공!');
-                console.log('저장된 Key:', ref.key);
                 alert('🎉 Firebase 연결 성공!\n테스트 데이터가 저장되었습니다.\n\nFirebase 콘솔 > Realtime Database에서 "test-rankings" 확인해보세요!');
                 
                 // 저장된 데이터 즉시 읽어보기
